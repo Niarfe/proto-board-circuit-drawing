@@ -8,17 +8,14 @@ XOFFSET=253
 YOFFSET=183
 YPITCH=32.8
 XPITCH=32.8
+RADIUS=7
 
-def add_circle(comps, x, y, radius=7, fill='red', outline='cyan'):
+def convert_to_xy(cell):
     global XOFFSET
     global YOFFSET
     global YPITCH
     global XPITCH
-    _x = XOFFSET + x*XPITCH - radius 
-    _y = YOFFSET + y*YPITCH - radius 
-    comps.ellipse((_x, _y, _x+2*radius, _y+2*radius), fill=fill, outline=outline)
-
-def convert_to_xy(cell):
+    assert isinstance(cell, str), f"Expected str type for cell but got {type(cell)}, {str(cell)}"
     letter = cell[:1]
     x = int(cell[1:3])
     x -= 1
@@ -36,20 +33,26 @@ def convert_to_xy(cell):
             'J': 0,
             }.get(letter, None)
     assert y != None, f"Could not extract x coord from {cell}"
-    return x, y 
+    _x = XOFFSET + x*XPITCH 
+    _y = YOFFSET + y*YPITCH 
+    return _x, _y 
 
-def add_jumper(comps, C1, C2):
+def add_circle(comps, cell, fill='red', outline='cyan'):
+    global RADIUS
+    x, y = convert_to_xy(cell)
+    comps.ellipse((x-RADIUS, y-RADIUS, x+RADIUS, y+RADIUS), fill=fill, outline=outline)
+
+def add_jumper(comps, C1, C2, fill='black', width=12):
     c1_x, c1_y = convert_to_xy(C1)
     c2_x, c2_y = convert_to_xy(C2)
-    comps.line([(c1_x, c1_y),(c2_x, c2_y)], fill='black', width=24)
+    comps.line([(c1_x, c1_y),(c2_x, c2_y)], fill=fill, width=width)
 
     
 for cell in ['J1','I1', 'H1', 'G1', 'F1',
         'A1', 'B1', 'C1', 'D1', 'E1',
         'J15', 'A15',
         'E5',]:
-    x, y = convert_to_xy(cell)
-    add_circle(components, x, y)
+    add_circle(components, cell)
 
 add_jumper(components, 'B1', 'F9')
 board.show()
