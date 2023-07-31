@@ -1,16 +1,15 @@
 from PIL import Image, ImageDraw
 
-board = Image.open('source/images/1608-00.jpg')
-components = ImageDraw.Draw(board)
 
-
+# BOARD PARAMETERS
 XOFFSET=253
 YOFFSET=183
 YPITCH=32.8
 XPITCH=32.8
 RADIUS=7
 
-def convert_to_xy(cell):
+# PRIVATE
+def _convert_to_xy(cell):
     global XOFFSET
     global YOFFSET
     global YPITCH
@@ -37,26 +36,39 @@ def convert_to_xy(cell):
     _y = YOFFSET + y*YPITCH 
     return _x, _y 
 
-def add_circle(comps, cell, fill='red', outline='cyan'):
+def _add_circle(comps, cell, fill='red', outline='cyan'):
     global RADIUS
-    x, y = convert_to_xy(cell)
+    x, y = _convert_to_xy(cell)
     comps.ellipse((x-RADIUS, y-RADIUS, x+RADIUS, y+RADIUS), fill=fill, outline=outline)
 
-def add_jumper(comps, C1, C2, fill='black', width=12):
-    c1_x, c1_y = convert_to_xy(C1)
-    c2_x, c2_y = convert_to_xy(C2)
-    comps.line([(c1_x, c1_y),(c2_x, c2_y)], fill=fill, width=width)
+# PUBLIC
+def add_jumper(comps, C1, C2, fill='blue', width=12):
+    c1_x, c1_y = _convert_to_xy(C1)
+    c2_x, c2_y = _convert_to_xy(C2)
+    _add_circle(comps, C1, fill='silver')
+    _add_circle(comps, C2, fill='silver')
+    comps.line([(c1_x, c1_y),(c2_x, c2_y)], fill=fill, width=2*width)
 
+def main(file_path):
+    lines = open(file_path, 'r').readlines()
+    board = Image.open('source/images/1608-00.jpg')
+    components = ImageDraw.Draw(board)
     
-for cell in ['J1','I1', 'H1', 'G1', 'F1',
-        'A1', 'B1', 'C1', 'D1', 'E1',
-        'J15', 'A15',
-        'E5',]:
-    add_circle(components, cell)
+    for line in lines:
+        if line.startswith('jumper'):
+            _, c1, c2 = line.strip().split()
+            add_jumper(components, c1, c2)
 
-add_jumper(components, 'B1', 'F9')
-board.show()
+    board.show()
 
+## TESTS ##
 def test_convert():
-    assert (1 , 1) == convert_to_xy('J1')
-    assert (10 ,1) == convert_to_xy('A1')
+    assert (1 , 1) == _convert_to_xy('J1')
+    assert (10 ,1) == _convert_to_xy('A1')
+
+if __name__=="__main__":    
+    import sys
+    assert len(sys.argv) == 2, "Pass in file to process"
+
+    main(sys.argv[1])
+
