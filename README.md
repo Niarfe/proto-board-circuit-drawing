@@ -1,6 +1,9 @@
 # proto-board-circuit-drawing
 Using images to visualize how to set up electronic components on proto boards
 
+## Requirements
+* [pillow](https://pillow.readthedocs.io/en/stable/reference/ImageColor.html)
+
 ## Basic Shapes
 * Points
 The point(xy, fill) method draws individual pixels. The xy argument represents a list of the points you want to draw. The list can be a list of
