@@ -176,3 +176,6 @@ first pair. The optional fill argument is the color of the inside of the poly- g
 * whitesmoke                     : #f5f5f5
 * yellow                         : #ffff00
 * yellowgreen                    : #9acd32
+
+## Useful links
+* [Soldering @adafruit](https://learn.adafruit.com/adafruit-guide-excellent-soldering/preparation?view=all&gclid=Cj0KCQjw2qKmBhCfARIsAFy8buLI-RFEaL_sZ2PfE6EhshMXE-QVQoXlbcb2_yKwp0NnH7ex6vxv0BUaAlggEALw_wcB)
